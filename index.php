@@ -18,6 +18,42 @@
  */
 
 /**
+ * Function to add the custom metabox.
+
+ * @param array $args The argument array containing $post of the metabox.
+ * @return void
+ */
+function wpt_quote_details( $args ) {
+	?>
+	<div class="meta_box">
+		<style scoped>
+			.meta_box{
+				display: grid;
+				grid-template-columns: max-content 1fr;
+				grid-row-gap: 10px;
+				grid-column-gap: 10px;
+			}
+			.meta_field{
+				display: contents;
+			}
+		</style>
+			<p class="meta_field">
+			<label for="citation">Quote:</label>
+			<textarea id="citation" name="citation"></textarea>
+		</p>
+		<p class="meta_field">
+			<label for="citation">Citation:</label>
+			<input type="text" id="citation" name="citation" />
+		</p>
+		<p class="meta_field">
+			<label for="author">Author:</label>
+			<input type="text" id="author" name="author" />
+		</p>
+	</div>
+	<?php
+}
+
+/**
  * Function to register the custom post type.
 
  * @return void
@@ -26,16 +62,30 @@ function register_quotes_post_type() {
 	register_post_type(
 		'quotes',
 		array(
-			'labels'        => array(
-				'name'          => __( 'quotes' ),
-				'singular_name' => __( 'quote' ),
+			'labels'               => array(
+				'name'          => __( 'Quotes' ),
+				'singular_name' => __( 'Quote' ),
 			),
-			'description'   => 'A custom quotes post type to add quote and its author with other details.',
-			'public'        => true,
-			'show_in_rest'  => true,
-			'menu_icon'     => 'dashicons-format-quote',
-			'menu_position' => 6,
-			'has_archive'   => true,
+			'description'          => __( 'A custom quotes post type to add quote and its author with other details.' ),
+			'public'               => true,
+			'show_in_rest'         => true,
+			'menu_icon'            => 'dashicons-format-quote',
+			'menu_position'        => 6,
+			'has_archive'          => true,
+			'register_meta_box_cb' => function ( $post ) {
+					$args = array(
+						'post' => $post,
+					);
+				add_meta_box(
+					'wpt_quote_details',
+					'Quote details',
+					'wpt_quote_details',
+					'quotes',
+					'side',
+					'default',
+					$args,
+				);
+			},
 		)
 	);
 };
