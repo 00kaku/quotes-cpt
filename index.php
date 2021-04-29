@@ -18,12 +18,12 @@
  */
 
 /**
- * Function to add the custom metabox.
-
- * @param array $args The argument array containing $post of the metabox.
+ * Function to add the custom metabox with fields.
+ *
+ * @param object $post WP Post object.
  * @return void
  */
-function wpt_quote_details( $args ) {
+function cpt_quote_details( $post ) {
 	?>
 	<div class="meta_box">
 		<style scoped>
@@ -38,24 +38,55 @@ function wpt_quote_details( $args ) {
 			}
 		</style>
 			<p class="meta_field">
-			<label for="citation">Quote:</label>
-			<textarea id="citation" name="citation"></textarea>
+			<label for="quote">Quote:</label>
+			<textarea
+			id="quote"
+			name="quote"
+			> <?php echo esc_attr( get_post_meta( $post->ID, 'quote', true ) ); ?></textarea>
 		</p>
 		<p class="meta_field">
 			<label for="citation">Citation:</label>
-			<input type="text" id="citation" name="citation" />
+			<input
+			type="text"
+			id="citation"
+			name="citation"
+			value= <?php echo esc_attr( get_post_meta( $post->ID, 'citation', true ) ); ?>
+			/>
 		</p>
 		<p class="meta_field">
 			<label for="author">Author:</label>
-			<input type="text" id="author" name="author" />
+			<input
+			type="text"
+			id="author"
+			name="author"
+			value= <?php echo esc_attr( get_post_meta( $post->ID, 'author', true ) ); ?>
+		/>
 		</p>
 	</div>
 	<?php
-}
+};
+/**
+ * Function to register the custom post type.
+ *
+ * @param integer $post_id The current post id.
+ * @return void
+ */
+function cpt_quote_details_save( $post_id ) {
+	$fields = array(
+		'quote',
+		'citation',
+		'author',
+	);
+	foreach ( $fields as $field ) {
+		if ( array_key_exists( $field, $_POST ) ) {
+			update_post_meta( $post_id, $field, sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) );
+		}
+	}
+};
 
 /**
  * Function to register the custom post type.
-
+ *
  * @return void
  */
 function register_quotes_post_type() {
@@ -72,18 +103,14 @@ function register_quotes_post_type() {
 			'menu_icon'            => 'dashicons-format-quote',
 			'menu_position'        => 6,
 			'has_archive'          => true,
-			'register_meta_box_cb' => function ( $post ) {
-					$args = array(
-						'post' => $post,
-					);
+			'register_meta_box_cb' => function () {
 				add_meta_box(
-					'wpt_quote_details',
+					'cpt_quote_details',
 					'Quote details',
-					'wpt_quote_details',
+					'cpt_quote_details',
 					'quotes',
 					'side',
 					'default',
-					$args,
 				);
 			},
 		)
@@ -91,3 +118,4 @@ function register_quotes_post_type() {
 };
 
 add_action( 'init', 'register_quotes_post_type' );
+add_action( 'save_post', 'cpt_quote_details_save' );
