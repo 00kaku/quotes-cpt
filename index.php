@@ -29,14 +29,14 @@ function cpt_quote_details( $post ) {
 		<style scoped>
 			.meta_box{
 				display: grid;
-				grid-template-columns: max-content 1fr;
+				grid-template-columns: 1fr;
 				grid-row-gap: 10px;
-				grid-column-gap: 10px;
 			}
 			.meta_field{
 				display: contents;
 			}
 		</style>
+			<form>
 			<p class="meta_field">
 			<label for="quote">Quote:</label>
 			<textarea
@@ -62,8 +62,10 @@ function cpt_quote_details( $post ) {
 			value= <?php echo esc_attr( get_post_meta( $post->ID, 'author', true ) ); ?>
 		/>
 		</p>
+		</form>
 	</div>
 	<?php
+	wp_nonce_field( 'Quotes_nonce_action', 'Quotes_nonce' );
 };
 /**
  * Function to register the custom post type.
@@ -77,6 +79,10 @@ function cpt_quote_details_save( $post_id ) {
 		'citation',
 		'author',
 	);
+	if ( ! isset( $_POST['Quotes_nonce'] ) ||
+	! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['Quotes_nonce'] ) ), 'Quotes_nonce_action' ) ) {
+		return;
+	}
 	foreach ( $fields as $field ) {
 		if ( array_key_exists( $field, $_POST ) ) {
 			update_post_meta( $post_id, $field, sanitize_text_field( wp_unslash( $_POST[ $field ] ) ) );
