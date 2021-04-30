@@ -29,7 +29,7 @@ function cpt_quote_details( $post ) {
 		<style scoped>
 			.meta_box{
 				display: grid;
-				grid-template-columns: 1fr;
+				grid-template-columns:1fr;
 				grid-row-gap: 10px;
 			}
 			.meta_field{
@@ -37,14 +37,12 @@ function cpt_quote_details( $post ) {
 			}
 		</style>
 			<form>
-			<p class="meta_field">
 			<label for="quote">Quote:</label>
 			<textarea
 			id="quote"
 			name="quote"
 			> <?php echo esc_attr( get_post_meta( $post->ID, 'quote', true ) ); ?></textarea>
-		</p>
-		<p class="meta_field">
+
 			<label for="citation">Citation:</label>
 			<input
 			type="text"
@@ -52,8 +50,6 @@ function cpt_quote_details( $post ) {
 			name="citation"
 			value= <?php echo esc_attr( get_post_meta( $post->ID, 'citation', true ) ); ?>
 			/>
-		</p>
-		<p class="meta_field">
 			<label for="author">Author:</label>
 			<input
 			type="text"
@@ -61,7 +57,6 @@ function cpt_quote_details( $post ) {
 			name="author"
 			value= <?php echo esc_attr( get_post_meta( $post->ID, 'author', true ) ); ?>
 		/>
-		</p>
 		</form>
 	</div>
 	<?php
@@ -117,6 +112,14 @@ function register_quotes_post_type() {
 					'quotes',
 					'side',
 					'default',
+				);
+				add_meta_box(
+					'postimagediv',
+					__( 'Author Image' ),
+					'post_thumbnail_meta_box',
+					'quotes',
+					'side',
+					'default'
 				);
 			},
 		)
