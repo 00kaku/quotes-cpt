@@ -104,6 +104,11 @@ function register_quotes_post_type() {
 			'menu_icon'            => 'dashicons-format-quote',
 			'menu_position'        => 6,
 			'has_archive'          => true,
+			'supports'             => array(
+				'editor',
+				'title',
+				'thumbnail',
+			),
 			'register_meta_box_cb' => function () {
 				add_meta_box(
 					'cpt_quote_details',
@@ -112,14 +117,6 @@ function register_quotes_post_type() {
 					'quotes',
 					'side',
 					'default',
-				);
-				add_meta_box(
-					'postimagediv',
-					__( 'Author Image' ),
-					'post_thumbnail_meta_box',
-					'quotes',
-					'side',
-					'default'
 				);
 			},
 		)
