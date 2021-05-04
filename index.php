@@ -84,7 +84,43 @@ function cpt_quote_details_save( $post_id ) {
 		}
 	}
 };
-
+/**
+ * Function to register the custom meta fields to show in rest api.
+ *
+ * @return void
+ */
+function register_quotes_meta_fields() {
+	register_meta(
+		'post',
+		'quote',
+		array(
+			'type'         => 'string',
+			'description'  => 'Quote to be displayed',
+			'single'       => true,
+			'show_in_rest' => true,
+		)
+	);
+	register_meta(
+		'post',
+		'author',
+		array(
+			'type'         => 'string',
+			'description'  => 'Author of the quote',
+			'single'       => true,
+			'show_in_rest' => true,
+		)
+	);
+	register_meta(
+		'post',
+		'citation',
+		array(
+			'type'         => 'string',
+			'description'  => 'Citation of the quote',
+			'single'       => true,
+			'show_in_rest' => true,
+		)
+	);
+}
 /**
  * Function to register the custom post type.
  *
@@ -108,6 +144,7 @@ function register_quotes_post_type() {
 				'editor',
 				'title',
 				'thumbnail',
+				'custom-fields',
 			),
 			'register_meta_box_cb' => function () {
 				add_meta_box(
@@ -125,3 +162,4 @@ function register_quotes_post_type() {
 
 add_action( 'init', 'register_quotes_post_type' );
 add_action( 'save_post', 'cpt_quote_details_save' );
+add_action( 'rest_api_init', 'register_quotes_meta_fields' );
