@@ -36,28 +36,26 @@ function cpt_quote_details( $post ) {
 				display: contents;
 			}
 		</style>
-			<form>
-			<label for="quote">Quote:</label>
+			<label for="quote"><?php esc_html_e( 'Quote:', 'quotes-cpt-plugin' ); ?></label>
 			<textarea
 			id="quote"
 			name="quote"
 			> <?php echo esc_attr( get_post_meta( $post->ID, 'quote', true ) ); ?></textarea>
 
-			<label for="citation">Citation:</label>
+			<label for="citation"><?php esc_html_e( 'Citation:', 'quotes-cpt-plugin' ); ?></label>
 			<input
 			type="text"
 			id="citation"
 			name="citation"
-			value= <?php echo esc_attr( get_post_meta( $post->ID, 'citation', true ) ); ?>
+			value= "<?php echo esc_attr( get_post_meta( $post->ID, 'citation', true ), ); ?>"
 			/>
-			<label for="author">Author:</label>
+			<label for="author"><?php esc_html_e( 'Author:', 'quotes-cpt-plugin' ); ?></label>
 			<input
 			type="text"
 			id="author"
 			name="author"
-			value= <?php echo esc_attr( get_post_meta( $post->ID, 'author', true ) ); ?>
+			value= "<?php echo esc_attr( get_post_meta( $post->ID, 'author', true ) ); ?>"
 		/>
-		</form>
 	</div>
 	<?php
 	wp_nonce_field( 'Quotes_nonce_action', 'Quotes_nonce' );
@@ -69,13 +67,14 @@ function cpt_quote_details( $post ) {
  * @return void
  */
 function cpt_quote_details_save( $post_id ) {
-	$fields = array(
+	$fields      = array(
 		'quote',
 		'citation',
 		'author',
 	);
-	if ( ! isset( $_POST['Quotes_nonce'] ) ||
-	! wp_verify_nonce( sanitize_text_field( wp_unslash( $_POST['Quotes_nonce'] ) ), 'Quotes_nonce_action' ) ) {
+	$quote_nonce = filter_input( INPUT_POST, 'Quotes_nonce', FILTER_SANITIZE_STRING );
+	if ( ! isset( $quote_nonce ) ||
+	! wp_verify_nonce( sanitize_text_field( wp_unslash( $quote_nonce ) ), 'Quotes_nonce_action' ) ) {
 		return;
 	}
 	foreach ( $fields as $field ) {
@@ -131,10 +130,10 @@ function register_quotes_post_type() {
 		'quotes',
 		array(
 			'labels'               => array(
-				'name'          => __( 'Quotes' ),
-				'singular_name' => __( 'Quote' ),
+				'name'          => __( 'Quotes', 'quotes-cpt-plugin' ),
+				'singular_name' => __( 'Quote', 'quotes-cpt-plugin' ),
 			),
-			'description'          => __( 'A custom quotes post type to add quote and its author with other details.' ),
+			'description'          => __( 'A custom quotes post type to add quote and its author with other details.', 'quotes-cpt-plugin' ),
 			'public'               => true,
 			'show_in_rest'         => true,
 			'menu_icon'            => 'dashicons-format-quote',
